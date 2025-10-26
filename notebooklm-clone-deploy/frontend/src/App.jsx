@@ -12,7 +12,8 @@ export default function App() {
     if (!file) return alert("Select a PDF first");
     const fd = new FormData();
     fd.append("file", file);
-    const res = await fetch("http://localhost:5000/upload", { method: "POST", body: fd });
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+    const res = await fetch(`${backendUrl}/upload`, { method: "POST", body: fd });
     const data = await res.json();
     if (data.ok) setUploaded(true);
     else alert("Upload failed: " + JSON.stringify(data));

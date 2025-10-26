@@ -7,7 +7,8 @@ export default function ChatBox({ viewerRef }) {
   const send = async () => {
     if (!q.trim()) return;
     setMessages(m=>[...m, { role: "user", text: q }]);
-    const res = await fetch("http://localhost:5000/chat", {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+    const res = await fetch(`${backendUrl}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question: q })

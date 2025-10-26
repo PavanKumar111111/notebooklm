@@ -63,23 +63,86 @@ Good luck — if you'd like, I can:
 
 ---
 
-## 🌍 Deployment (Ready Configuration)
+## 🌍 Deployment Guide
 
-### Frontend (Netlify)
-- Environment Variable: `VITE_BACKEND_URL=https://your-backend.onrender.com`
-- Build Command: `npm run build`
-- Publish Directory: `dist`
-- Framework: Vite (auto-detected)
+This application is ready to deploy to free cloud providers. Follow these steps:
 
-### Backend (Render)
-- Build Command: `npm install`
-- Start Command: `npm start`
-- Environment Variables:
-  - `PORT=10000` (Render default)
-  - `GEMINI_API_KEY=your_key` (if using Gemini API)
+### Step 1: Deploy Backend to Render
 
-After deployment, update your frontend `.env` with:
+1. Create a free account at [Render](https://render.com)
+2. Click "New +" and select "Web Service"
+3. Connect your repository or upload the `backend` folder
+4. Configure the service:
+   - **Name**: notebooklm-backend (or your choice)
+   - **Environment**: Node
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+   - **Instance Type**: Free
+5. Click "Create Web Service"
+6. Wait for deployment to complete
+7. Copy your backend URL (e.g., `https://notebooklm-backend.onrender.com`)
+
+**Alternative**: You can also use Railway, Fly.io, or Heroku for backend hosting.
+
+### Step 2: Deploy Frontend to Netlify
+
+1. Create a free account at [Netlify](https://netlify.com)
+2. Click "Add new site" > "Deploy manually" or connect your repository
+3. If deploying manually, build locally first:
+   ```bash
+   cd frontend
+   npm install
+   npm run build
+   ```
+   Then drag and drop the `dist` folder to Netlify
+4. If connecting repository:
+   - **Base directory**: `frontend`
+   - **Build command**: `npm run build`
+   - **Publish directory**: `dist`
+5. Add environment variable:
+   - Go to Site settings > Environment variables
+   - Add: `VITE_BACKEND_URL` = `https://your-backend.onrender.com`
+6. Trigger a new deployment
+7. Your app will be live at your Netlify URL
+
+**Alternative**: You can also use Vercel for frontend hosting.
+
+### Step 3: Update CORS (Important!)
+
+After deploying, update the backend to allow requests from your frontend domain:
+
+1. Edit `backend/server.js`
+2. Update the CORS configuration:
+   ```javascript
+   app.use(cors({
+     origin: ['https://your-netlify-app.netlify.app', 'http://localhost:5173']
+   }));
+   ```
+3. Redeploy the backend
+
+### Deployment Checklist
+
+- [ ] Backend deployed and accessible via URL
+- [ ] Frontend environment variable `VITE_BACKEND_URL` set correctly
+- [ ] Frontend built and deployed
+- [ ] CORS configured to allow frontend domain
+- [ ] Test PDF upload and chat functionality
+- [ ] Share URLs with others to verify public access
+
+### Local Development
+
+For testing locally before deployment:
+
+```bash
+# Terminal 1 - Backend
+cd backend
+npm install
+npm run dev
+
+# Terminal 2 - Frontend
+cd frontend
+npm install
+npm run dev
 ```
-VITE_BACKEND_URL=https://your-backend.onrender.com
-```
-and rebuild.
+
+The frontend will be available at `http://localhost:5173` and backend at `http://localhost:5000`.
